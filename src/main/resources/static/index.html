@@ -25,6 +25,10 @@
                     stompClient.subscribe('/topic/messages', function (messageOutput) {
                         showMessageOutput(JSON.parse(messageOutput.body));
                     });
+                    stompClient.subscribe('/user/queue/private-messages', function (messageOutput) {
+                        // Handle the received private message here
+                        console.log("Received private message: " + messageOutput.body);
+                    });
                 });
             }
 
