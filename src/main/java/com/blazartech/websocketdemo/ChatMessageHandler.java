@@ -9,6 +9,7 @@ import com.blazartech.websocketdemo.data.OutputMessage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -21,11 +22,21 @@ import org.springframework.stereotype.Controller;
 @Slf4j
 public class ChatMessageHandler {
 
+    @Autowired
+    private NotificationService notificationService;
+    
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public OutputMessage send(ChatMessage message) throws Exception {
         log.info("handling message {}", message);
         String time = new SimpleDateFormat("HH:mm").format(new Date());
-        return new OutputMessage(message.getFrom(), message.getText(), time);
+        OutputMessage om = new OutputMessage(message.getFrom(), message.getText(), time);
+        
+        // notify the auditor
+        log.info("notifying auditor");
+        notificationService.sendPrivateMessage("auditor", om);
+        
+        // done
+        return om;
     }
 }
