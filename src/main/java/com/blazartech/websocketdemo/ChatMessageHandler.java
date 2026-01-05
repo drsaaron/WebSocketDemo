@@ -24,18 +24,18 @@ public class ChatMessageHandler {
 
     @Autowired
     private NotificationService notificationService;
-    
+
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public OutputMessage send(ChatMessage message) throws Exception {
         log.info("handling message {}", message);
         String time = new SimpleDateFormat("HH:mm").format(new Date());
         OutputMessage om = new OutputMessage(message.getFrom(), message.getText(), time);
-        
+
         // notify the auditor
         log.info("notifying auditor");
         notificationService.sendPrivateMessage("auditor", om);
-        
+
         // done
         return om;
     }

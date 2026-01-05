@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
-import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.socket.EnableWebSocketSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  *
@@ -28,7 +29,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
  */
 @Configuration
 @EnableWebSecurity
-@EnableWebSocketSecurity
+//@EnableWebSocketSecurity
 @Slf4j
 public class WebSecurityConfiguration {
 
@@ -82,17 +83,17 @@ public class WebSecurityConfiguration {
         return messages.build();
     }*/
 
-    @Bean
+ /*   @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         // Authorize messages with specific destinations
         messages
-                .simpDestMatchers("/topic/system/notifications").permitAll() // Allow anyone to subscribe to public notifications
-                .simpDestMatchers("/user/**", "/topic/users/{user}/**").authenticated() // User-specific destinations require auth
-                .simpDestMatchers("/app/**").authenticated() // Messages to application handlers require auth
-                .simpDestMatchers("/topic/messages").authenticated()
-                .anyMessage().denyAll(); // Deny all other message types/destinations by default
+//                .simpDestMatchers("/topic/system/notifications").permitAll() // Allow anyone to subscribe to public notifications
+//                .simpDestMatchers("/user/**", "/topic/users/{user}/**").authenticated() // User-specific destinations require auth
+//                .simpDestMatchers("/app/**").authenticated() // Messages to application handlers require auth
+//                .simpDestMatchers("/topic/messages").authenticated()
+                .anyMessage().permitAll(); // Deny all other message types/destinations by default
         return messages.build();
-    }
+    }*/
     
     @Bean
     public PasswordEncoder passwordEncoder() {
