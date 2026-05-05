@@ -21,6 +21,21 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Endpoint the frontend will connect to
+        registry.addEndpoint("/ws").withSockJS();
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.setApplicationDestinationPrefixes("/app");
+        // /topic is for public messages, /queue is for private messages
+        registry.enableSimpleBroker("/topic", "/queue");
+        // Prefix used to identify private channels
+        registry.setUserDestinationPrefix("/user");
+    }
+    
+    /*@Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         log.info("configuring broker");
         
@@ -42,5 +57,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         log.info("addeding chat endpoint");
 //        registry.addEndpoint("/chat");
         registry.addEndpoint("/chat").withSockJS();
-    }
+    }*/
 }

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller;
  *
  * @author scott
  */
-@Controller
+//@Controller
 @Slf4j
 public class ChatMessageHandler {
 
@@ -30,7 +30,7 @@ public class ChatMessageHandler {
     public OutputMessage send(ChatMessage message) throws Exception {
         log.info("handling message {}", message);
         String time = new SimpleDateFormat("HH:mm").format(new Date());
-        OutputMessage om = new OutputMessage(message.getFrom(), message.getText(), time);
+        OutputMessage om = new OutputMessage(message.getSender(), message.getContent(), time);
 
         // notify the auditor
         log.info("notifying auditor");
