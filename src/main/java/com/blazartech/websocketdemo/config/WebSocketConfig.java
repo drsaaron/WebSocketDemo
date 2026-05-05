@@ -29,8 +29,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
+        
         // /topic is for public messages, /queue is for private messages
-        registry.enableSimpleBroker("/topic", "/queue");
+        // Enable a STOMP broker relay to forward messages to RabbitMQ
+        // Use a full-featured STOMP broker relay (RabbitMQ) instead of the simple in-memory broker
+        registry.enableStompBrokerRelay("/topic", "/queue")
+                .setRelayHost("localhost")        // Your RabbitMQ host
+                .setRelayPort(61613)              // Default RabbitMQ STOMP port
+                .setClientLogin("guest")          // RabbitMQ username
+                .setClientPasscode("guest")       // RabbitMQ password
+                .setSystemLogin("guest")          // Used by Spring to connect internally
+                .setSystemPasscode("guest");
+        
         // Prefix used to identify private channels
         registry.setUserDestinationPrefix("/user");
     }
