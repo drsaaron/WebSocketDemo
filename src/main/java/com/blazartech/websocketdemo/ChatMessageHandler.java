@@ -34,7 +34,7 @@ public class ChatMessageHandler {
 
         // notify the auditor
         log.info("notifying auditor");
-        notificationService.sendPrivateMessage("auditor", om);
+    //    notificationService.sendPrivateMessage("auditor", om);
 
         // done
         return om;

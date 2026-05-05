@@ -4,6 +4,7 @@
  */
 package com.blazartech.websocketdemo.controller;
 
+import com.blazartech.websocketdemo.NotificationService;
 import com.blazartech.websocketdemo.data.ChatMessage;
 import java.security.Principal;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,9 @@ public class ChatController {
     
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     // Helper endpoint for the frontend to fetch the authenticated username
     @GetMapping("/api/username")
@@ -37,6 +41,11 @@ public class ChatController {
     @SendTo("/topic/public")
     public ChatMessage sendPublicMessage(@Payload ChatMessage message, Principal principal) {
         message.setSender(principal.getName());
+        
+        // notify the auditor
+        log.info("notifying auditor");
+        notificationService.sendPrivateMessage("auditor", message);
+        
         return message;
     }
 

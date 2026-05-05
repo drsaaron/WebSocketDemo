@@ -4,7 +4,7 @@
  */
 package com.blazartech.websocketdemo;
 
-import com.blazartech.websocketdemo.data.OutputMessage;
+import com.blazartech.websocketdemo.data.ChatMessage;
 
 /**
  *
@@ -12,5 +12,5 @@ import com.blazartech.websocketdemo.data.OutputMessage;
  */
 public interface NotificationService {
     
-    public void sendPrivateMessage(String userId, OutputMessage message);
+    public void sendPrivateMessage(String userId, ChatMessage message);
 }

@@ -32,8 +32,9 @@ public class WebSecurityConfiguration {
         UserDetails alice = User.withUsername("alice").password("{noop}password").roles("USER").build();
         UserDetails bob = User.withUsername("bob").password("{noop}password").roles("USER").build();
         UserDetails charlie = User.withUsername("charlie").password("{noop}password").roles("USER").build();
-
-        return new InMemoryUserDetailsManager(alice, bob, charlie);
+        UserDetails auditor = User.withUsername("auditor").password("{noop}password").roles("USER").build();
+        
+        return new InMemoryUserDetailsManager(alice, bob, charlie, auditor);
     }
 
     private final AuthenticationEntryPoint aep = (request, response, authException) -> {
