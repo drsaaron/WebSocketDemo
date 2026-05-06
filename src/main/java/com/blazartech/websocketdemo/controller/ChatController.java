@@ -31,9 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
     
     @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-    
-    @Autowired
     private NotificationService notificationService;
     
     @Autowired
@@ -53,9 +50,26 @@ public class ChatController {
         
         // notify the auditor
         log.info("notifying auditor");
-        notificationService.sendPrivateMessage("auditor", message);
+        saveAndSendPrivateMessage("auditor", message);
         
         return message;
+    }
+    
+    private void saveAndSendPrivateMessage(String recipient, ChatMessage message) {
+        
+        // 1. Save to Database as UNDELIVERED
+        ChatMessageEntity entity = new ChatMessageEntity();
+        entity.setSender(message.getSender());
+        entity.setRecipient(recipient);
+        entity.setContent(message.getContent());
+        entity.setDelivered(false);
+        entity = messageRepository.save(entity);
+
+        // Attach the DB ID to the payload
+        message.setId(entity.getId());
+        
+        // send
+        notificationService.sendPrivateMessage(recipient, message);
     }
 
     // Handles private messages
@@ -75,11 +89,7 @@ public class ChatController {
         message.setId(entity.getId());
         
         // Route the message to the specific user's queue: /user/{recipient}/queue/private
-        messagingTemplate.convertAndSendToUser(
-                message.getRecipient(), 
-                "/queue/private", 
-                message
-        );
+        saveAndSendPrivateMessage(message.getRecipient(), message);
     }
     
     // NEW: Fetch missed messages upon login
