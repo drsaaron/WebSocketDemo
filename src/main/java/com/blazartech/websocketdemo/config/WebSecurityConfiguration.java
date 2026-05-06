@@ -46,6 +46,7 @@ public class WebSecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable()) // Disabled for local testing simplicity
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
