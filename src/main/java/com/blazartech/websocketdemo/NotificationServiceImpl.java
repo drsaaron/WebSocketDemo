@@ -19,16 +19,20 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-    
+
     @Override
     public void sendPrivateMessage(String userId, Object message, String destination) {
-        log.info("sending private message {} to user {} on destination {}", message, userId, destination);
-        
-        messagingTemplate.convertAndSendToUser(
-            userId, 
-            destination, 
-            message
-        );
+        if (message != null) {
+            log.info("sending private message {} to user {} on destination {}", message, userId, destination);
+
+            messagingTemplate.convertAndSendToUser(
+                    userId,
+                    destination,
+                    message
+            );
+        } else {
+            log.error("trying to send a private message with no content, which seems wrong");
+        }
     }
-    
+
 }
