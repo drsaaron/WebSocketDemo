@@ -25,4 +25,6 @@ public class ChatMessageEntity {
     private String recipient;
     private String content;
     private boolean delivered;
+    
+    private String clientMessageId;
 }

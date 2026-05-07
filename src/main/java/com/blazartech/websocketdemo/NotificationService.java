@@ -12,5 +12,6 @@ import com.blazartech.websocketdemo.data.ChatMessage;
  */
 public interface NotificationService {
     
-    public void sendPrivateMessage(String userId, ChatMessage message);
+    default public void sendPrivateMessage(String userId, ChatMessage message) { sendPrivateMessage(userId, message, "/queue/private"); }
+    public void sendPrivateMessage(String userId, Object message, String destination);
 }

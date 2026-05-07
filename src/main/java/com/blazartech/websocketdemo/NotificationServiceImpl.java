@@ -4,7 +4,6 @@
  */
 package com.blazartech.websocketdemo;
 
-import com.blazartech.websocketdemo.data.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,12 +21,12 @@ public class NotificationServiceImpl implements NotificationService {
     private SimpMessagingTemplate messagingTemplate;
     
     @Override
-    public void sendPrivateMessage(String userId, ChatMessage message) {
-        log.info("sending private message {} to user {}", message, userId);
+    public void sendPrivateMessage(String userId, Object message, String destination) {
+        log.info("sending private message {} to user {} on destination {}", message, userId, destination);
         
         messagingTemplate.convertAndSendToUser(
             userId, 
-            "/queue/private", 
+            destination, 
             message
         );
     }
