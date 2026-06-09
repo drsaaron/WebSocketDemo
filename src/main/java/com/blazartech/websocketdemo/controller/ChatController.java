@@ -9,14 +9,13 @@ import com.blazartech.websocketdemo.data.ChatMessage;
 import com.blazartech.websocketdemo.data.jpa.ChatMessageEntity;
 import com.blazartech.websocketdemo.data.jpa.ChatMessageEntityRepository;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -110,16 +109,11 @@ public class ChatController {
     public List<ChatMessage> getOfflineMessages(Principal principal) {
         log.info("getting offline messages for {}", principal);
         List<ChatMessageEntity> entities = messageRepository.findByRecipientAndDeliveredFalse(principal.getName());
-        List<ChatMessage> messages = new ArrayList<>();
+        List<ChatMessage> messages = entities.stream()
+                .peek(e -> { e.setDelivered(true); messageRepository.save(e); })
+                .map(e -> buildChatMessage(e))
+                .collect(Collectors.toList());
 
-        for (ChatMessageEntity e : entities) {
-            ChatMessage msg = buildChatMessage(e);
-            messages.add(msg);
-
-            // Mark as delivered now that they've been fetched
-            e.setDelivered(true);
-            messageRepository.save(e);
-        }
         return messages;
     }
 
